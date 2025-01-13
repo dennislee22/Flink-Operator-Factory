@@ -1,4 +1,6 @@
-# Flink-Operator
+# Flink + SQL Stream Builder (SSB) Operator
+
+<img width="594" alt="image" src="https://github.com/user-attachments/assets/93a9f8b7-5be8-46bc-a354-2608eabcd04e" />
 
 ```
 # oc create ns csa-operator
@@ -142,4 +144,19 @@ ingress-flink   <none>   myflink.apps.dlee1.cldr.example   10.129.83.133   80   
 ```
 
 <img width="1421" alt="image" src="https://github.com/user-attachments/assets/0ab02dd2-b81e-4522-8780-83ce809c3387" />
+
+```
+# kubectl -n csa-operator apply -f ingress.ssb.yml
+ingress.networking.k8s.io/ingress-ssb created
+
+# kubectl -n csa-operator get ingress ingress-ssb 
+NAME          CLASS    HOSTS                           ADDRESS         PORTS   AGE
+ingress-ssb   <none>   myssb.apps.dlee1.cldr.example   10.129.83.133   80      62s
+```
+
+- Browse `http://myssb.apps.dlee1.cldr.example ` and login as admin user.
+<img width="1419" alt="image" src="https://github.com/user-attachments/assets/7ce5c9dd-564a-4083-9259-b6c6fbd6602b" />
+
+
+
 
