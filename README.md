@@ -7,7 +7,7 @@ In this article, I will explain the installation procedures for CSA (Cloudera St
 
 1. In the existing Kubernetes cluster (version 1.23 or later), create a new namespace.
 ```
-# oc create ns csa-operator
+# kubectl create ns csa-operator
 namespace/csa-operator created
 ```
 
