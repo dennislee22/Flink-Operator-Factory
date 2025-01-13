@@ -25,7 +25,7 @@ Password: yyy
 Login Succeeded
 ```
 
-4. Deploy the CSA Operator as follows. Other helm options can be obtained (here)[https://docs.cloudera.com/csa-operator/1.1/reference/topics/csa-op-reference.html]. 
+4. Deploy the CSA Operator as follows. Other helm options can be obtained [here](https://docs.cloudera.com/csa-operator/1.1/reference/topics/csa-op-reference.html). 
 ```
 # helm install csa-operator --namespace csa-operator --set 'flink-kubernetes-operator.imagePullSecrets[0].name=cfm-credential' --set 'ssb.sse.image.imagePullSecrets[0].name=cfm-credential' --set 'ssb.sqlRunner.image.imagePullSecrets[0].name=cfm-credential' --set-file flink-kubernetes-operator.clouderaLicense.fileContent=/cloudera_license.txt oci://container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator --version 1.1.2-b17  
 Pulled: container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator:1.1.2-b17
