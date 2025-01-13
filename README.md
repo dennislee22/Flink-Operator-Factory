@@ -147,7 +147,7 @@ NAME          CLASS    HOSTS                           ADDRESS         PORTS   A
 ingress-ssb   <none>   myssb.apps.dlee1.cldr.example   10.129.83.133   80      62s
 ```
 
-- Browse the SSB dashboard via `http://myssb.apps.dlee1.cldr.example` and login as admin user.
+13. Browse the SSB dashboard via `http://myssb.apps.dlee1.cldr.example` and login as admin user.
 <img width="1419" alt="image" src="https://github.com/user-attachments/assets/7ce5c9dd-564a-4083-9259-b6c6fbd6602b" />
 
 
