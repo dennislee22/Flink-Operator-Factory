@@ -1,11 +1,18 @@
-# Flink + SQL Stream Builder (SSB) Operator
+# Flink + SQL Stream Operator: Real-Time Stream Processing
 
 <img width="594" alt="image" src="https://github.com/user-attachments/assets/93a9f8b7-5be8-46bc-a354-2608eabcd04e" />
 
+Apache Flink, coupled with SQL Stream Builder (SSB), provides a robust platform for building scalable, real-time stream processing applications. Whether you're building real-time analytics, monitoring systems, or complex event-driven applications, Flink's support for SQL-based stream processing ensures that developers can quickly express complex logic while taking advantage of Flink’s powerful features like event-time processing, windowing, and fault tolerance. By abstracting the complexity of stream processing behind familiar SQL syntax, SQL Stream Builder democratizes real-time data analytics, enabling teams to deliver actionable insights faster and more efficiently.
+In this article, I will explain the installation procedures for Apache Flink and the SSB operator on a Kubernetes cluster, harnessing cloud-native benefits such as self-healing, declarative deployments, and scalability.
+
+1. In the existing Kubernetes cluster, create a new namespace.
 ```
 # oc create ns csa-operator
 namespace/csa-operator created
+```
 
+2. 
+```
 # kubectl create secret docker-registry cfm-credential --docker-server container.repository.cloudera.com --docker-username xxx --docker-password yyy --namespace csa-operator
 secret/cfm-credential created
 
@@ -135,7 +142,7 @@ spec:
 ```
 
 ```
-# kubectl -n csa-operator apply -f ingress.flink-rest.yml 
+# kubectl -n csa-operator apply -f ingress-flink.yml 
 ingress.networking.k8s.io/ingress-flink created
 
 # kubectl -n csa-operator get ingress
@@ -146,7 +153,7 @@ ingress-flink   <none>   myflink.apps.dlee1.cldr.example   10.129.83.133   80   
 <img width="1421" alt="image" src="https://github.com/user-attachments/assets/0ab02dd2-b81e-4522-8780-83ce809c3387" />
 
 ```
-# kubectl -n csa-operator apply -f ingress.ssb.yml
+# kubectl -n csa-operator apply -f ingress-ssb.yml
 ingress.networking.k8s.io/ingress-ssb created
 
 # kubectl -n csa-operator get ingress ingress-ssb 
