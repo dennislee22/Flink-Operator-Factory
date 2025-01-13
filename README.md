@@ -110,7 +110,7 @@ Storing signatures
 
 7. Deploy the Flink application by applying the `flink-deployment.yml` file.
 
-8. Upon successful deployment, ensure the pods and its associated container(s) are up and `Running`.
+8. Upon successful deployment, ensure all pods and its associated container(s) are up and `Running`.
 ```
 # kubectl get pods -n csa-operator 
 NAME                                        READY   STATUS    RESTARTS      AGE
