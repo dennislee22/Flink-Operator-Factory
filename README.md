@@ -1,6 +1,6 @@
 # Flink + SQL Stream Operator: Real-Time Stream Processing
 
-<img width="594" alt="image" src="https://github.com/user-attachments/assets/93a9f8b7-5be8-46bc-a354-2608eabcd04e" />
+<img width="811" alt="image" src="https://github.com/user-attachments/assets/f8c0b546-0faf-4bd3-af50-9f4c2571e425" />
 
 Apache Flink, coupled with SQL Stream Builder (SSB), provides a robust platform for building scalable, real-time stream processing applications. Whether you're building real-time analytics, monitoring systems, or complex event-driven applications, Flink's support for SQL-based stream processing ensures that developers can quickly express complex logic while taking advantage of Flink’s powerful features like event-time processing, windowing, and fault tolerance. By abstracting the complexity of stream processing behind familiar SQL syntax, SSB democratizes real-time data analytics, enabling teams to deliver actionable insights faster and more efficiently.
 In this article, I will explain the installation procedures for CSA (Cloudera Streaming Analytics) operator on a Kubernetes cluster, harnessing cloud-native benefits such as self-healing, declarative deployments, and scalability.
