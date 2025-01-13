@@ -38,7 +38,7 @@ REVISION: 1
 TEST SUITE: None
 ```
 
-5. Upon successful deployment, ensure the pods and its associated containers are up and `Running`.
+5. Upon successful deployment, ensure all pods and its associated containers are up and `Running`.
 ```
 # kubectl get pods -n csa-operator
 NAME                                        READY   STATUS    RESTARTS   AGE
