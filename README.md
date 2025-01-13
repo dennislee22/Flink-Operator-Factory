@@ -81,8 +81,7 @@ replicaset.apps/ssb-sse-58cf4cf8c6                    1         1         1     
 STEP 1/2: FROM flink:1.18
 ✔ docker.io/library/flink:1.18
 
-# docker image ls
-Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+# podman image ls
 REPOSITORY                           TAG         IMAGE ID      CREATED        SIZE
 localhost/flink-kubernetes-tutorial  latest      71d28938a00b  3 minutes ago  804 MB
 docker.io/library/flink              1.18        b9caebf65539  7 months ago   802 MB
@@ -94,8 +93,7 @@ Login Succeeded!
 
 # podman image tag flink-kubernetes-tutorial nexus.dlee1.cldr.example:9999/pvcds/flink-kubernetes-tutorial:latest
 
-# docker image ls
-Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+# podman image ls
 REPOSITORY                                                     TAG         IMAGE ID      CREATED        SIZE
 localhost/flink-kubernetes-tutorial                            latest      71d28938a00b  6 minutes ago  804 MB
 nexus.dlee1.cldr.example:9999/pvcds/flink-kubernetes-tutorial  latest      71d28938a00b  6 minutes ago  804 MB
