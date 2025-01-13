@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-flink
+  namespace: csa-operator
+spec:
+  rules:
+  - host: myflink.apps.dlee1.cldr.example
+    http:
+      paths:
+      - backend:
+          service:
+            name: flink-kubernetes-tutorial-rest
+            port:
+              number: 8081
+        path: /
+        pathType: Prefix
