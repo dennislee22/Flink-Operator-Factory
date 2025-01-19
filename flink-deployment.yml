@@ -1,0 +1,25 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: flink-kubernetes-tutorial
+spec:
+  image: nexus.dlee1.cldr.example:9999/pvcds/flink-kubernetes-tutorial:latest
+  flinkVersion: v1_18
+  flinkConfiguration:
+    taskmanager.numberOfTaskSlots: "4"
+  serviceAccount: flink
+  mode: native
+  jobManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
+  taskManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
+  job:
+    args: ["--rowsPerSec", "10"]
+    jarURI: local:///opt/flink/usrlib/flink-kubernetes-tutorial.jar
+    parallelism: 4
+    state: running
+    upgradeMode: stateless
