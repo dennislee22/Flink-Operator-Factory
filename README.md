@@ -153,3 +153,20 @@ ingress-ssb   <none>   myssb.apps.dlee1.cldr.example   10.129.83.133   80      6
 
 
 
+```
+# mvn clean package
+[INFO] Replacing original artifact with shaded artifact.
+[INFO] Replacing /root/flink-master/pyflink-kafka/target/pyflink-kafka-1.19.1-csaop1.1.2.jar with /root/flink-master/pyflink-kafka/target/pyflink-kafka-1.19.1-csaop1.1.2-shaded.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] Flink Tutorials 1.19.1-csaop1.1.2 .................. SUCCESS [  0.119 s]
+[INFO] Flink Master :: Pyflink Kafka 1.19.1-csaop1.1.2 .... SUCCESS [  7.710 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 7.929 s
+[INFO] Finished at: 2025-01-28T09:23:58Z
+[INFO] ------------------------------------------------------------------------
+```
+
