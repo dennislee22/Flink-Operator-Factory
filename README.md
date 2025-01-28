@@ -155,6 +155,28 @@ ingress-ssb   <none>   myssb.apps.dlee1.cldr.example   10.129.83.133   80      6
 
 ```
 # mvn clean package
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] Flink Tutorials                                                    [pom]
+[INFO] Flink Master :: Pyflink Kafka                                      [jar]
+[INFO] 
+[INFO] ------------------< com.cloudera.flink:flink-master >-------------------
+[INFO] Building Flink Tutorials 1.19.1-csaop1.1.2                         [1/2]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ flink-master ---
+[INFO] 
+[INFO] ------------------< com.cloudera.flink:pyflink-kafka >------------------
+[INFO] Building Flink Master :: Pyflink Kafka 1.19.1-csaop1.1.2           [2/2]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ pyflink-kafka ---
+[INFO] Deleting /root/flink-master/pyflink-kafka/target
+...
+...
+...
 [INFO] Replacing original artifact with shaded artifact.
 [INFO] Replacing /root/flink-master/pyflink-kafka/target/pyflink-kafka-1.19.1-csaop1.1.2.jar with /root/flink-master/pyflink-kafka/target/pyflink-kafka-1.19.1-csaop1.1.2-shaded.jar
 [INFO] ------------------------------------------------------------------------
@@ -170,3 +192,20 @@ ingress-ssb   <none>   myssb.apps.dlee1.cldr.example   10.129.83.133   80      6
 [INFO] ------------------------------------------------------------------------
 ```
 
+
+```
+# podman build -t pyflink-oss-kafka .
+# podman image tag pyflink-oss-kafka nexus.dlee1.cldr.example:9999/pvcds/pyflink-oss-kafka:latest
+# podman push nexus.dlee1.cldr.example:9999/pvcds/pyflink-oss-kafka
+# curl -u admin:admin  https://admin:admin@nexus.dlee1.cldr.example:9999/v2/pvcds/pyflink-oss-kafka/tags/list | jq
+{
+  "name": "pvcds/pyflink-oss-kafka",
+  "tags": [
+    "latest"
+  ]
+}
+```
+
+```
+
+```
