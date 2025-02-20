@@ -1,0 +1,21 @@
+ssb:
+  ssbConfiguration:
+    application.properties: |+
+      # SSB configuration overrides
+      ssb.job-notifications.enabled=true
+
+      # Remote artifact storage
+      # ssb.sse.remote-artifact-storage-dir=sample-bucket/artifacts
+      # ssb.sse.remote-artifact-storage-type=s3
+
+      # Kafka properties to use for the sampling Kafka server.
+      kafka.enabled=true
+      spring.kafka.bootstrap-servers=my-cluster-kafka-brokers.dlee-kafkanodepool.svc.cluster.local:9092
+      spring.kafka.jaas.enabled=false
+      spring.kafka.properties.security.protocol=PLAINTEXT
+      # spring.kafka.properties.ssl.truststore.location=
+      # spring.kafka.properties.sasl.kerberos.service.name=
+      # sample.sink.parameters=key1=value1,key2=value2
+      # ssb.python.udf.reaper.period.seconds=3600
+      # ssb.python.udf.ttl=10m
+      # ssb.python.udf.enabled=false
