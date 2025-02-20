@@ -2,7 +2,13 @@ ssb:
   ssbConfiguration:
     application.properties: |+
       # SSB configuration overrides
-      ssb.job-notifications.enabled=true
+      ssb.job-notifications.enabled=false
+      #ssb.job-notifications.mail.host=
+      #ssb.job-notifications.mail.password=
+      #ssb.job-notifications.mail.port=587
+      #ssb.job-notifications.mail.smtp.enable=true
+      #ssb.job-notifications.mail.smtp.enable-starttls=true
+      #ssb.job-notifications.mail.username=
 
       # Remote artifact storage
       # ssb.sse.remote-artifact-storage-dir=sample-bucket/artifacts
@@ -14,7 +20,7 @@ ssb:
       spring.kafka.jaas.enabled=false
       spring.kafka.properties.security.protocol=PLAINTEXT
       # spring.kafka.properties.ssl.truststore.location=
-      # spring.kafka.properties.sasl.kerberos.service.name=
+      spring.kafka.properties.sasl.kerberos.service.name=
       # sample.sink.parameters=key1=value1,key2=value2
       # ssb.python.udf.reaper.period.seconds=3600
       # ssb.python.udf.ttl=10m
