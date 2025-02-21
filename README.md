@@ -25,9 +25,18 @@ Password: yyy
 Login Succeeded
 ```
 
+```
+# kubectl create secret generic ssb-sampling-kafka -n csa-ssb \
+--from-literal=SSB_SAMPLING_BOOTSTRAP_SERVERS=my-cluster-kafka-brokers.dlee-kafkanodepool.svc.cluster.local:9092 \
+--from-literal=SSB_SAMPLING_SECURITY_PROTOCOL=PLAINTEXT
+```
+
 4. Deploy the CSA Operator as follows. Other helm options can be obtained [here](https://docs.cloudera.com/csa-operator/1.1/reference/topics/csa-op-reference.html). 
 ```
-# helm install csa-operator --namespace csa-operator --set 'flink-kubernetes-operator.imagePullSecrets[0].name=cfm-credential' --set 'ssb.sse.image.imagePullSecrets[0].name=cfm-credential' --set 'ssb.sqlRunner.image.imagePullSecrets[0].name=cfm-credential' --set-file flink-kubernetes-operator.clouderaLicense.fileContent=/license.txt  oci://container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator --version 1.1.2-b17 -f ./tochange.yml  
+# helm install csa-operator --namespace csa-k8s --set 'flink-kubernetes-operator.imagePullSecrets[0].name=cfm-credential' \
+--set 'ssb.sse.image.imagePullSecrets[0].name=cfm-credential' --set 'ssb.sqlRunner.image.imagePullSecrets[0].name=cfm-credential' \
+--set-file flink-kubernetes-operator.clouderaLicense.fileContent=/license.txt \
+oci://container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator --version 1.1.2-b17 -f ./tochange.yml  
 ```
 
 5. Upon successful deployment, ensure all pods and its associated containers are up and `Running`.
