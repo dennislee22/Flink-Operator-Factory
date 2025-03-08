@@ -26,49 +26,88 @@ Password: yyy
 Login Succeeded
 ```
 
-4. Deploy the CSA Operator as follows. Administrator has the option to set additional setting during deployment. For instance, the following installation is deployed with 'csa-ssb-config.yml' file in which the Flink cluster uses the external postgresql database rather than embedded database. In addition, the user database is derived from an external LDAP server. Other helm options can be obtained [here](https://docs.cloudera.com/csa-operator/1.2/reference/topics/csa-op-reference.html). 
+4. Ensure that no `csa-operator` Helm chart was previously installed.
+```
+helm list -A | grep csa-operator
+```
+
+5. Deploy the `csa-operator` Helm chart. Administrator has the option to set additional settings during deployment. For instance, the following installation is deployed with 'csa-ssb-config.yml' file in which the Flink cluster uses the external postgresql database rather than embedded database. In addition, the user database is derived from an external LDAP server. Other helm options can be obtained [here](https://docs.cloudera.com/csa-operator/1.2/reference/topics/csa-op-reference.html). 
+```
+# kubectl create secret generic ssb-ldap -n csa-ssb \
+  --from-literal=SSB_LDAP_URL="ldap://10.129.82.87:389" \
+  --from-literal=SSB_LDAP_BASE_DN=dc=cldr,dc=example \
+  --from-literal=SSB_LDAP_USERNAME=uid=admin,cn=users,cn=accounts,dc=cldr,dc=example \
+  --from-literal=SSB_LDAP_PASSWORD=zxczxc \
+  --from-literal=SSB_LDAP_USER_DN_PATTERNS=uid={0} \
+  --from-literal=SSB_LDAP_USER_SEARCH_BASE=cn=users,cn=accounts,dc=cldr,dc=example \
+  --from-literal=SSB_LDAP_USER_SEARCH_FILTER= \
+  --from-literal=SSB_LDAP_GROUP_SEARCH_BASE=cn=groups,cn=accounts,dc=cldr,dc=example
+```
+
 ```
 # helm install csa-operator --namespace csa-ssb --set 'flink-kubernetes-operator.imagePullSecrets[0].name=cfm-credential' \
 --set 'ssb.sse.image.imagePullSecrets[0].name=cfm-credential' --set 'ssb.sqlRunner.image.imagePullSecrets[0].name=cfm-credential' \
 --set-file flink-kubernetes-operator.clouderaLicense.fileContent=/license.txt \
-oci://container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator --version 1.2.0-b27 -f ./csa-ssb-config.yml  
+oci://container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator --version 1.2.0-b27 -f ./csa-ssb-config.yml
+
+Pulled: container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator:1.2.0-b27
+Digest: sha256:06771c433e481b93c8cf2f92fac2a2a8abd6a0076b575ec97ff0b8970aabf332
+NAME: csa-operator
+LAST DEPLOYED: Sat Mar  8 07:31:41 2025
+NAMESPACE: csa-ssb
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None  
 ```
 
-5. Upon successful deployment, ensure all pods and its associated containers are up and `Running`.
+6. Upon successful deployment, ensure all pods and its associated containers are up and `Running`.
 ```
-# kubectl get pods -n csa-operator
+# kubectl -n csa-ssb get secret
+NAME                                 TYPE                             DATA   AGE
+cfm-credential                       kubernetes.io/dockerconfigjson   1      76m
+csa-op-license                       Opaque                           1      7m48s
+flink-operator-webhook-secret        Opaque                           1      7m48s
+sh.helm.release.v1.csa-operator.v1   helm.sh/release.v1               1      7m48s
+ssb-fernet-key                       Opaque                           1      7m48s
+ssb-ldap                             Opaque                           11     88s
+ssb-postgresql-auth                  Opaque                           8      7m48s
+ssb-ssb-users-secret                 Opaque                           1      7m48s
+webhook-server-cert                  kubernetes.io/tls                5      15m
+
+# kubectl -n csa-ssb get pods
 NAME                                        READY   STATUS    RESTARTS   AGE
-flink-kubernetes-operator-f67b98774-rvhsb   2/2     Running   0          2m31s
-ssb-postgresql-844bbb6c5b-9hprs             1/1     Running   0          2m31s
-ssb-sse-58cf4cf8c6-r8xqf                    1/1     Running   0          2m31s
+flink-kubernetes-operator-79d98b567-6n82v   2/2     Running   0          7m52s
+ssb-sse-865457bc46-9wt6m                    1/1     Running   0          79s
 
-# kubectl -n csa-operator get pvc
-NAME                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-ssb-postgresql-db   Bound    pvc-5a36ee80-c7d6-4ca4-9025-2ddc6cc6a1e4   100Mi      RWO            longhorn       2m42s
-
-# kubectl -n csa-operator get all
 NAME                                            READY   STATUS    RESTARTS   AGE
-pod/flink-kubernetes-operator-f67b98774-rvhsb   2/2     Running   0          3m29s
-pod/ssb-postgresql-844bbb6c5b-9hprs             1/1     Running   0          3m29s
-pod/ssb-sse-58cf4cf8c6-r8xqf                    1/1     Running   0          3m29s
+pod/flink-kubernetes-operator-79d98b567-6n82v   2/2     Running   0          8m48s
+pod/ssb-sse-865457bc46-9wt6m                    1/1     Running   0          2m15s
 
-NAME                                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)     AGE
-service/flink-operator-webhook-service   ClusterIP   10.43.44.57     <none>        443/TCP     3m29s
-service/ssb-postgresql                   ClusterIP   10.43.72.57     <none>        5432/TCP    3m29s
-service/ssb-sse                          ClusterIP   10.43.152.255   <none>        18121/TCP   3m29s
+NAME                                     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)     AGE
+service/flink-operator-webhook-service   ClusterIP   10.43.199.16   <none>        443/TCP     8m48s
+service/ssb-sse                          ClusterIP   10.43.2.207    <none>        18121/TCP   8m48s
 
 NAME                                        READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/flink-kubernetes-operator   1/1     1            1           3m29s
-deployment.apps/ssb-postgresql              1/1     1            1           3m29s
-deployment.apps/ssb-sse                     1/1     1            1           3m29s
+deployment.apps/flink-kubernetes-operator   1/1     1            1           8m48s
+deployment.apps/ssb-sse                     1/1     1            1           8m48s
 
 NAME                                                  DESIRED   CURRENT   READY   AGE
-replicaset.apps/flink-kubernetes-operator-f67b98774   1         1         1       3m29s
-replicaset.apps/ssb-postgresql-844bbb6c5b             1         1         1       3m29s
-replicaset.apps/ssb-sse-58cf4cf8c6                    1         1         1       3m29s
+replicaset.apps/flink-kubernetes-operator-79d98b567   1         1         1       8m48s
+replicaset.apps/ssb-sse-865457bc46                    1         1         1       8m48s
 ```
 
-6. Next, deploy the Flink application. This step involves building a docker image, push it to the external docker registry with certified CA. Also, ensure that `git` and `maven` tools are already deployed in your client system before proceeding with the following steps.
+**Note:** A total of 35 tables created at the external Postgres database. 
+```
+postgres=# \c ssb
+You are now connected to database "ssb" as user "postgres".
+ssb=# SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';
+ count 
+-------
+    35
+(1 row)
+```
+
+7. Next, deploy the Flink application. This step involves building a docker image, push it to the external docker registry with certified CA. Also, ensure that `git` and `maven` tools are already deployed in your client system before proceeding with the following steps.
 ```
 # git clone https://github.com/cloudera/flink-tutorials.git -b CSA-OPERATOR-1.0.0
 # cd flink-tutorials/flink-kubernetes-tutorial
