@@ -5,15 +5,16 @@
 Apache Flink, coupled with SQL Stream Builder (SSB), provides a robust platform for building scalable, real-time stream processing applications. Whether you're building real-time analytics, monitoring systems, or complex event-driven applications, Flink's support for SQL-based stream processing ensures that developers can quickly express complex logic while taking advantage of Flink’s powerful features like event-time processing, windowing, and fault tolerance. By abstracting the complexity of stream processing behind familiar SQL syntax, SSB democratizes real-time data analytics, enabling teams to deliver actionable insights faster and more efficiently.
 In this article, I will explain the installation procedures for CSA (Cloudera Streaming Analytics) operator on a Kubernetes cluster, harnessing cloud-native benefits such as self-healing, declarative deployments, and scalability.
 
-1. In the existing Kubernetes cluster (version 1.23 or later), create a new namespace.
+1. In the CNCF-compatible Kubernetes cluster (version 1.23 or later), create a new namespace.
 ```
-# kubectl create ns csa-operator
-namespace/csa-operator created
+# kubectl create ns csa-ssb
+namespace/csa-ssb created
 ```
 
 2. Create a secret object in the same namespace to store your Cloudera credentials.
 ```
-# kubectl create secret docker-registry cfm-credential --docker-server container.repository.cloudera.com --docker-username xxx --docker-password yyy --namespace csa-operator
+# kubectl create secret docker-registry cfm-credential --docker-server container.repository.cloudera.com \
+--docker-username xxx --docker-password yyy --namespace csa-ssb
 secret/cfm-credential created
 ```
 
@@ -25,18 +26,12 @@ Password: yyy
 Login Succeeded
 ```
 
+4. Deploy the CSA Operator as follows. Administrator has the option to set additional setting during deployment. For instance, the following installation is deployed with 'csa-ssb-config.yml' file in which the Flink cluster uses the external postgresql database rather than embedded database. In addition, the user database is derived from an external LDAP server. Other helm options can be obtained [here](https://docs.cloudera.com/csa-operator/1.2/reference/topics/csa-op-reference.html). 
 ```
-# kubectl create secret generic ssb-sampling-kafka -n csa-ssb \
---from-literal=SSB_SAMPLING_BOOTSTRAP_SERVERS=my-cluster-kafka-brokers.dlee-kafkanodepool.svc.cluster.local:9092 \
---from-literal=SSB_SAMPLING_SECURITY_PROTOCOL=PLAINTEXT
-```
-
-4. Deploy the CSA Operator as follows. Other helm options can be obtained [here](https://docs.cloudera.com/csa-operator/1.1/reference/topics/csa-op-reference.html). 
-```
-# helm install csa-operator --namespace csa-k8s --set 'flink-kubernetes-operator.imagePullSecrets[0].name=cfm-credential' \
+# helm install csa-operator --namespace csa-ssb --set 'flink-kubernetes-operator.imagePullSecrets[0].name=cfm-credential' \
 --set 'ssb.sse.image.imagePullSecrets[0].name=cfm-credential' --set 'ssb.sqlRunner.image.imagePullSecrets[0].name=cfm-credential' \
 --set-file flink-kubernetes-operator.clouderaLicense.fileContent=/license.txt \
-oci://container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator --version 1.1.2-b17 -f ./tochange.yml  
+oci://container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator --version 1.2.0-b27 -f ./csa-ssb-config.yml  
 ```
 
 5. Upon successful deployment, ensure all pods and its associated containers are up and `Running`.
@@ -201,6 +196,12 @@ ingress-ssb   <none>   myssb.apps.dlee1.cldr.example   10.129.83.133   80      6
 [INFO] ------------------------------------------------------------------------
 ```
 
+
+```
+# kubectl create secret generic ssb-sampling-kafka -n csa-ssb \
+--from-literal=SSB_SAMPLING_BOOTSTRAP_SERVERS=my-cluster-kafka-brokers.dlee-kafkanodepool.svc.cluster.local:9092 \
+--from-literal=SSB_SAMPLING_SECURITY_PROTOCOL=PLAINTEXT
+```
 
 ```
 # podman build -t pyflink-oss-kafka .
