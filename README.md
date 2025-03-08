@@ -109,8 +109,8 @@ ssb=# SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'publi
 
 7. Next, deploy the Flink application. This step involves building a docker image, push it to the external docker registry with certified CA. Also, ensure that `git` and `maven` tools are already deployed in your client system before proceeding with the following steps.
 ```
-# git clone https://github.com/dennislee22/Flink-SSB-Operator/flink-kubernetes-tutorial -b CSA-OPERATOR-1.2.0
-# cd flink-kubernetes-tutorial
+# git clone https://github.com/dennislee22/Flink-SSB-Operator
+# cd Flink-SSB-Operator/flink-kubernetes-tutorial
 # mvn clean package
 # docker build -t flink-kubernetes-tutorial .
 STEP 1/2: FROM flink:1.18
