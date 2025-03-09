@@ -208,15 +208,14 @@ STEP 2/10: COPY ./target/pyflink-kafka-1.19.2-csaop1.2.0-b27.jar /opt/flink/usrl
 ....
 Successfully tagged localhost/pyflink-kafka:latest
 
-# podman image tag pyflink-kafka nexus.dlee1.cldr.example:9999/pvcds/pyflink-kafka:19.2-csaop1.2.0-b27
-# docker image ls
-Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
-REPOSITORY                                         TAG                  IMAGE ID      CREATED        SIZE
-localhost/pyflink-kafka                            latest               babcd0aece38  2 minutes ago  2.38 GB
-nexus.dlee1.cldr.example:9999/pvcds/pyflink-kafka  19.2-csaop1.2.0-b27  babcd0aece38  2 minutes ago  2.38 GB
-docker.io/library/flink                            1.19                 7fb8e45bc851  3 weeks ago    801 MB
+# podman image tag pyflink-kafka nexus.dlee1.cldr.example:9999/pvcds/pyflink-kafka:dlee-1.0
+# podman image ls
+REPOSITORY                                         TAG         IMAGE ID      CREATED             SIZE
+localhost/pyflink-kafka                            latest      dfe6e1a98b37  About a minute ago  2.49 GB
+nexus.dlee1.cldr.example:9999/pvcds/pyflink-kafka  dlee-1.0    dfe6e1a98b37  About a minute ago  2.49 GB
+docker.io/library/flink                            1.19        7fb8e45bc851  3 weeks ago         801 MB
 
-# podman push nexus.dlee1.cldr.example:9999/pvcds/pyflink-kafka:19.2-csaop1.2.0-b27
+# podman push nexus.dlee1.cldr.example:9999/pvcds/pyflink-kafka:dlee-1.0
 Getting image source signatures
 Copying blob d2e07a5d820e done
 ....
@@ -276,27 +275,28 @@ pyflink-helloworld-rest          ClusterIP   10.43.247.39   <none>        8081/T
 ssb-sse                          ClusterIP   10.43.2.207    <none>        18121/TCP           25h
 ```
 
-16. Expose the Flink REST service to the external network by deploying the `ingress-flink.yml` file.
+16. Expose the Flink REST service to the external network by deploying the `ingress-flink-helloworld.yaml` file.
 ```
 # kubectl -n csa-operator apply -f ingress-flink-helloworld.yaml
 ingress.networking.k8s.io/ingress-flink created
 
 # kubectl -n csa-ssb get ingress
-NAME                       CLASS    HOSTS                             ADDRESS   PORTS   AGE
-ingress-flink-helloworld   <none>   myflink.apps.dlee1.cldr.example             80      12s
+NAME                       CLASS    HOSTS                                        ADDRESS   PORTS   AGE
+ingress-flink-helloworld   <none>   pyflink-helloworld.apps.dlee1.cldr.example             80      4s
 ```
 
-17. You may now browse the Flink dashboard as follows.
-<img width="1421" alt="image" src="https://github.com/user-attachments/assets/0ab02dd2-b81e-4522-8780-83ce809c3387" />
+17. You may now browse the Flink dashboard via 
+<img width="1426" alt="image" src="https://github.com/user-attachments/assets/6fb915b6-ec8b-4164-bb2a-5b282e913893" />
 
-18. Expose the SSB UI service to the external network by deploying the `ingress-ssb.yml` file.
+
+19. Expose the SSB UI service to the external network by deploying the `ingress-flink-helloworld.yaml` file.
 ```
-# kubectl -n csa-operator apply -f ingress-ssb.yml
-ingress.networking.k8s.io/ingress-ssb created
+# kubectl -n csa-ssb apply -f ingress-flink-helloworld.yaml 
+ingress.networking.k8s.io/ingress-flink-helloworld created
 
-# kubectl -n csa-operator get ingress ingress-ssb 
-NAME          CLASS    HOSTS                           ADDRESS         PORTS   AGE
-ingress-ssb   <none>   myssb.apps.dlee1.cldr.example   10.129.83.133   80      62s
+# kubectl -n csa-ssb get ingress
+NAME                       CLASS    HOSTS                                        ADDRESS   PORTS   AGE
+ingress-flink-helloworld   <none>   pyflink-helloworld.apps.dlee1.cldr.example             80      4s
 ```
 
 19. Browse SSB dashboard at `http://myssb.apps.dlee1.cldr.example` and login as admin user.
