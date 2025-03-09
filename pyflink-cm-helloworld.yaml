@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pyflink-hello-world-script
+data:
+  pyflink-hello-world.py: |
+    # Simple PyFlink script example
+    from pyflink.datastream import StreamExecutionEnvironment
+    from pyflink.common import Types
+    
+    # Initialize the stream execution environment
+    env = StreamExecutionEnvironment.get_execution_environment()
+    
+    # Create a simple data stream with a list of names
+    names = env.from_collection(
+        collection=["DennisLee", "Cloudera", "Awesome"],
+        type_info=Types.STRING()
+    )
+    
+    # Print the stream to the console
+    names.print()
+    
+    # Execute the job
+    env.execute("PyFlink Hello World Job")
