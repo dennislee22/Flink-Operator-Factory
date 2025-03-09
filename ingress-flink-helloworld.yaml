@@ -1,16 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-flink
-  namespace: csa-operator
+  name: ingress-flink-helloworld
+  namespace: csa-ssb
 spec:
   rules:
-  - host: myflink.apps.dlee1.cldr.example
+  - host: pyflink-helloworld.apps.dlee1.cldr.example
     http:
       paths:
       - backend:
           service:
-            name: flink-kubernetes-tutorial-rest
+            name: pyflink-helloworld-rest
             port:
               number: 8081
         path: /
