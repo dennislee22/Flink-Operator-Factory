@@ -1,0 +1,15 @@
+ssb:
+  userManagement:
+    type: ldap
+    ldap:
+      secure: true
+      secretRef: ssb-ldap
+      admins:
+        - admin
+  database:
+    create: false
+    auth:
+      type: postgresql
+      jdbcUrl: "jdbc:postgresql://postgresql.postgresql.svc.cluster.local:5432/ssb"
+      username: postgres
+      password: postgres
