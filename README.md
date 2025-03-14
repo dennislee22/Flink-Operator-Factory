@@ -1,4 +1,4 @@
-# Flink Stream Operator: Real-Time Stream Processing
+# Flink K8s Operator: Real-Time Stream Processing
 
 <img width="512" alt="image" src="https://github.com/user-attachments/assets/79348128-f4cb-4a28-b5b1-6980b13aee96" />
 
