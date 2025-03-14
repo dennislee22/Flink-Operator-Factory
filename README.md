@@ -2,18 +2,18 @@
 
 <img width="512" alt="image" src="https://github.com/user-attachments/assets/79348128-f4cb-4a28-b5b1-6980b13aee96" />
 
-Apache Flink, coupled with SQL Stream Builder (SSB), provides a robust platform for building scalable, real-time stream processing applications. Whether you're building real-time analytics, monitoring systems, or complex event-driven applications, Flink's support for SQL-based stream processing ensures that developers can quickly express complex logic while taking advantage of Flink’s powerful features like event-time processing, windowing, and fault tolerance. By abstracting the complexity of stream processing behind familiar SQL syntax, SSB democratizes real-time data analytics, enabling teams to deliver actionable insights faster and more efficiently.
+Apache Flink, coupled with SQL Stream Builder (SSB), provides a robust platform for building scalable, real-time stream processing applications. Whether you're building real-time analytics, monitoring systems, or complex event-driven applications, Flink ensures that developers can quickly express complex logic while taking advantage of Flink’s powerful features like event-time processing, windowing, and fault tolerance.
 In this article, I will explain the procedures to
-a. deploy for CSA (Cloudera Streaming Analytics) operator on a Kubernetes cluster
-b. build JAR file containing connectors and dependencies by using Maven
-c. build a docker image with Flink runtime, containing the above JAR file,
-d. run pyFlink app/script which is written inside the configmap. 
+- deploy for CSA (Cloudera Streaming Analytics) operator on a Kubernetes cluster,
+- build JAR file containing connectors and dependencies by using Maven,
+- build a docker image with Flink runtime, containing the above JAR file and push it into the docker registry,
+- run PyFlink app/script which is written inside the configmap.
+Using configmap to store the PyFlink script allows seamless code modification and prevents the need to rebuild the docker image repeatedly.
 
 <img width="758" alt="image" src="https://github.com/user-attachments/assets/ac784b0d-629d-4b63-a95a-db139baed307" />
 
 My environment:
-**CSA Operator Version:** `1.19.2-csaop1.2.0`, which is based on [OSS Flink Kubernetes Operator v1.9](https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-release-1.9/) and [Flink v1.19](https://nightlies.apache.org/flink/flink-docs-master/release-notes/flink-1.19/)
-
+**CSA Operator Version:** `1.19.2-csaop1.2.0`, based on [OSS Flink Kubernetes Operator v1.9](https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-release-1.9/) and [Flink v1.19](https://nightlies.apache.org/flink/flink-docs-master/release-notes/flink-1.19/)
 
 
 1. In the CNCF-compatible Kubernetes cluster (version 1.23 or later), create a new namespace.
