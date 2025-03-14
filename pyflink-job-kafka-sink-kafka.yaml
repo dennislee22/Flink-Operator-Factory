@@ -1,10 +1,10 @@
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
-  name: pyflink-helloworld
+  name: pyflink-kafka-sink-kafka
   namespace: csa-ssb
 spec:
-  image: nexus.dlee1.cldr.example:9999/pvcds/pyflink-kafka:19.2-csaop1.2.0-b27 #for TaskManager
+  image: nexus.dlee1.cldr.example:9999/pvcds/pyflink-kafka:dlee-1.5 #for TaskManager
   flinkVersion: v1_19
   flinkConfiguration:
     taskmanager.numberOfTaskSlots: "1"
@@ -18,11 +18,11 @@ spec:
       apiVersion: v1
       kind: Pod
       metadata:
-        name: pyflink-helloworld
+        name: pyflink-kafka-sink-kafka
       spec:
         serviceAccountName: flink  # Service account for the job
         initContainers:
-          - name: create-scripts-directory
+          - name: create-dir
             image: alpine:latest
             command:
               - /bin/sh
@@ -35,22 +35,26 @@ spec:
                 mountPath: /opt/flink/scripts
         containers:
           - name: flink-main-container
-            image: nexus.dlee1.cldr.example:9999/pvcds/pyflink-kafka:19.2-csaop1.2.0-b27
+            image: nexus.dlee1.cldr.example:9999/pvcds/pyflink-kafka:dlee-1.5
             volumeMounts:
               - name: pyflink-scripts
                 mountPath: /opt/flink/scripts  # Mount Python script to /opt/flink/scripts
         volumes:
           - name: pyflink-scripts
             configMap:
-              name: pyflink-hello-world-script
+              name: pyflink-kafka-sink-script
   taskManager:
     resource:
       memory: "2048m"
       cpu: 1
   job:
     jarURI: local:///opt/flink/usrlib/pyflink-kafka.jar
-    #jarURI: "local:///opt/flink/opt/flink-python.jar,local:///opt/flink/usrlib/pyflink-kafka.jar"
+    #jarURI: "local:///opt/flink/opt/flink-python-1.19.1-csaop1.1.2.jar,local:///opt/flink/usrlib/pyflink-kafka.jar"
     entryClass: "org.apache.flink.client.python.PythonDriver"
-    args: ["-pyclientexec", "/usr/bin/python3", "-py", "/opt/flink/scripts/pyflink-hello-world.py"]
+    args: 
+    - "-pyclientexec"
+    - "/usr/bin/python3"
+    - "-py"
+    - "/opt/flink/scripts/pyflink-kafka-sink.py"
     parallelism: 1
     upgradeMode: stateless
