@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pyflink-kafka-sink-script
+data:
+  pyflink-kafka-sink.py: |
+    from pyflink.common import WatermarkStrategy
+    from pyflink.common.serialization import SimpleStringSchema
+    from pyflink.common.typeinfo import Types
+    from pyflink.datastream import StreamExecutionEnvironment
+    from pyflink.datastream.connectors.kafka import KafkaSource, KafkaSink
+    from pyflink.datastream.connectors.kafka import KafkaOffsetsInitializer, KafkaRecordSerializationSchema
+    from pyflink.datastream.connectors.kafka import DeliveryGuarantee
+    import os
+    import sys
+
+    # site_packages_path = '/opt/flink/.local/lib/python3.11/site-packages'
+    site_packages_path = '/opt/flink/.local/lib/python3.9/site-packages'
+    if site_packages_path not in sys.path:
+        sys.path.insert(0, site_packages_path)
+
+    def kafka_sink_kafka():
+        KAFKA_BROKER = "my-cluster-kafka-bootstrap.dlee-kafkanodepool.svc.cluster.local:9092"
+        KAFKA_SOURCE_TOPIC = "pyflink-sink-in"  # The topic you're reading from
+        KAFKA_DEST_TOPIC = "pyflink-sink-out"  # The new topic you're writing to
+
+        env = StreamExecutionEnvironment.get_execution_environment()
+
+        # Define Kafka source
+        kafka_source = (
+            KafkaSource.builder()
+            .set_bootstrap_servers(KAFKA_BROKER)
+            .set_topics(KAFKA_SOURCE_TOPIC)
+            .set_group_id("flink_group")
+            .set_starting_offsets(KafkaOffsetsInitializer.earliest())
+            .set_value_only_deserializer(SimpleStringSchema())
+            .build()
+        )
+
+        # Read from Kafka source
+        ds = env.from_source(kafka_source, WatermarkStrategy.no_watermarks(), "Kafka Source")
+
+        # Process the data (for demonstration, just counting the length of the message)
+        #stream = ds.map(lambda a: len(a), output_type=Types.INT())
+        stream = ds.map(lambda a: str(len(a)), output_type=Types.STRING())
+
+        # Define Kafka Sink using provided pattern
+        sink = KafkaSink.builder() \
+            .set_bootstrap_servers(KAFKA_BROKER) \
+            .set_record_serializer(
+                KafkaRecordSerializationSchema.builder()
+                    .set_topic(KAFKA_DEST_TOPIC)
+                    .set_value_serialization_schema(SimpleStringSchema())  # You can modify this depending on data type
+                    .build()
+            ) \
+            .set_delivery_guarantee(DeliveryGuarantee.AT_LEAST_ONCE) \
+            .build()
+
+        # Sink the data into the new Kafka topic
+        stream.sink_to(sink)
+
+        #env.execute("kafka_sink_kafka")
+        env.execute()
+
+    if __name__ == "__main__":
+        kafka_sink_kafka()
