@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-flink-kafka-sink
+  namespace: csa-ssb
+spec:
+  rules:
+  - host: pyflink-kafka-sink.apps.dlee1.cldr.example
+    http:
+      paths:
+      - backend:
+          service:
+            name: pyflink-kafka-sink-kafka-rest
+            port:
+              number: 8081
+        path: /
+        pathType: Prefix
