@@ -2,8 +2,8 @@
 
 <img width="512" alt="image" src="https://github.com/user-attachments/assets/79348128-f4cb-4a28-b5b1-6980b13aee96" />
 
-Apache Flink provides a robust platform for building scalable, real-time stream processing applications. Whether you're building real-time analytics, monitoring systems, or complex event-driven applications, Flink ensures that developers can quickly express complex logic while taking advantage of Flink’s powerful features like event-time processing, windowing, and fault tolerance. Flink K8s Operator offers a scalable and robust form factor for hosting Flink cluster on a Kubernetes cluster.
-In this article, I will explain the procedure to
+Apache Flink provides a robust platform for building scalable, real-time stream processing applications. Whether you're building real-time analytics, monitoring systems, or complex event-driven applications, Flink ensures that developers can quickly express complex logic while taking advantage of Flink’s powerful features like event-time processing, windowing, and fault tolerance. Flink K8s Operator offers a scalable and resilient form factor for hosting Flink cluster on Kubernetes. 
+In this article, I will walk you through the procedure to...
 - deploy CSA (Cloudera Streaming Analytics) operator on a Kubernetes cluster,
 - build JAR file containing connectors and dependencies by using Maven,
 - build a docker image with Flink runtime, containing the above JAR file and push it into the docker registry,
