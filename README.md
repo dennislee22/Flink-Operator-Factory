@@ -79,26 +79,22 @@ ssb-postgresql-auth                  Opaque                           8      7m4
 ssb-ssb-users-secret                 Opaque                           1      7m48s
 webhook-server-cert                  kubernetes.io/tls                5      15m
 
-# kubectl -n csa-ssb get pods
-NAME                                        READY   STATUS    RESTARTS   AGE
-flink-kubernetes-operator-79d98b567-6n82v   2/2     Running   0          7m52s
-ssb-sse-865457bc46-9wt6m                    1/1     Running   0          79s
+# kubectl -n csa-ssb get all
+NAME                                            READY   STATUS    RESTARTS       AGE
+pod/flink-kubernetes-operator-79d98b567-6n82v   2/2     Running   2 (5d3h ago)   6d4h
+pod/ssb-sse-865457bc46-9wt6m                    1/1     Running   1 (5d3h ago)   6d4h
 
-NAME                                            READY   STATUS    RESTARTS   AGE
-pod/flink-kubernetes-operator-79d98b567-6n82v   2/2     Running   0          8m48s
-pod/ssb-sse-865457bc46-9wt6m                    1/1     Running   0          2m15s
-
-NAME                                     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)     AGE
-service/flink-operator-webhook-service   ClusterIP   10.43.199.16   <none>        443/TCP     8m48s
-service/ssb-sse                          ClusterIP   10.43.2.207    <none>        18121/TCP   8m48s
+NAME                                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE
+service/flink-operator-webhook-service   ClusterIP   10.43.199.16    <none>        443/TCP             6d4h
+service/ssb-sse                          ClusterIP   10.43.2.207     <none>        18121/TCP           6d4h
 
 NAME                                        READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/flink-kubernetes-operator   1/1     1            1           8m48s
-deployment.apps/ssb-sse                     1/1     1            1           8m48s
+deployment.apps/flink-kubernetes-operator   1/1     1            1           6d4h
+deployment.apps/ssb-sse                     1/1     1            1           6d4h
 
 NAME                                                  DESIRED   CURRENT   READY   AGE
-replicaset.apps/flink-kubernetes-operator-79d98b567   1         1         1       8m48s
-replicaset.apps/ssb-sse-865457bc46                    1         1         1       8m48s
+replicaset.apps/flink-kubernetes-operator-79d98b567   1         1         1       6d4h
+replicaset.apps/ssb-sse-865457bc46                    1         1         1       6d4h
 ```
 
 **Note:** A total of 35 tables created at the external Postgres database. 
@@ -225,83 +221,58 @@ Writing manifest to image destination
 Storing signatures
 ```
 
-11. Deploy the Flink application by applying the `pyflink-job-helloworld.yaml` file.
+11. Deploy the Flink application by applying the `pyflink-job-kafka-sink-kafka.yaml` file.
 ```
-# kubectl -n csa-ssb apply -f pyflink-job-helloworld.yaml
-flinkdeployment.flink.apache.org/pyflink-helloworld created
+# kubectl -n csa-ssb apply -f pyflink-job-kafka-sink-kafka.yaml
+flinkdeployment.flink.apache.org/pyflink-kafka-sink-kafka created
 ```
 
 12. Upon successful deployment, ensure all pods (Flink application and TaskManager) and its associated container(s) are up and `Running`.
 ```
 # kubectl -n csa-ssb get pods
-NAME                                        READY   STATUS    RESTARTS      AGE
-flink-kubernetes-operator-79d98b567-6n82v   2/2     Running   2 (44m ago)   25h
-pyflink-helloworld-8d7468b76-ckgtr          1/1     Running   0             84s
-pyflink-helloworld-taskmanager-1-1          1/1     Running   0             53s
-ssb-sse-865457bc46-9wt6m                    1/1     Running   1 (44m ago)   25h
-```
-
-13. Verify that the Flink job has completed successfully by checking the Flink application pod log.
-```
-# oc -n csa-ssb logs pyflink-helloworld-8d7468b76-ckgtr  
-Defaulted container "flink-main-container" out of: flink-main-container, create-scripts-directory (init), k8tz (init)
-/opt/flink/bin/config-parser-utils.sh: line 45: /opt/flink/conf/flink-conf.yaml: Read-only file system
-Starting kubernetes-application as a console application on host pyflink-helloworld-8d7468b76-ckgtr.
-2025-03-09 08:43:49,561 INFO  org.apache.flink.runtime.entrypoint.ClusterEntrypoint        [] - --------------------------------------------------------------------------------
-2025-03-09 08:43:49,565 INFO  org.apache.flink.runtime.entrypoint.ClusterEntrypoint        [] -  Preconfiguration: 
-....
-....
-2025-03-09 08:44:22,366 INFO  org.apache.flink.runtime.resourcemanager.slotmanager.DefaultSlotStatusSyncer [] - Freeing slot b8a2b8fc9c054fbe2fe7a23b13bed31a.
-2025-03-09 08:44:23,597 INFO  org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap [] - Application completed SUCCESSFULLY
-```
-
-14. Upon successful deployment, ensure all pods and its associated container(s) are up and `Running`.
-```
-# kubectl get pods -n csa-operator 
-NAME                                        READY   STATUS    RESTARTS      AGE
-flink-kubernetes-operator-f67b98774-rvhsb   2/2     Running   2 (24m ago)   161m
-flink-kubernetes-tutorial-557c46fdc-hbb9d   1/1     Running   0             15m
-flink-kubernetes-tutorial-taskmanager-1-1   1/1     Running   0             14m
-ssb-postgresql-844bbb6c5b-9hprs             1/1     Running   0             161m
-ssb-sse-58cf4cf8c6-r8xqf                    1/1     Running   1 (24m ago)   161m
+NAME                                        READY   STATUS    RESTARTS       AGE
+flink-kubernetes-operator-79d98b567-6n82v   2/2     Running   2 (5d3h ago)   6d4h
+pyflink-kafka-sink-kafka-84d456d8db-ftrlz   1/1     Running   0              3d
+pyflink-kafka-sink-kafka-taskmanager-1-1    1/1     Running   0              3d
+ssb-sse-865457bc46-9wt6m                    1/1     Running   1 (5d3h ago)   6d4h
 ```
 
 15. Note that `pyflink-helloworld` and `pyflink-helloworld-rest` services have been created automatically.
 ```
 # kubectl -n csa-ssb get svc
-NAME                             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)             AGE
-flink-operator-webhook-service   ClusterIP   10.43.199.16   <none>        443/TCP             25h
-pyflink-helloworld               ClusterIP   None           <none>        6123/TCP,6124/TCP   5m6s
-pyflink-helloworld-rest          ClusterIP   10.43.247.39   <none>        8081/TCP            5m6s
-ssb-sse                          ClusterIP   10.43.2.207    <none>        18121/TCP           25h
+NAME                             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE
+flink-operator-webhook-service   ClusterIP   10.43.199.16    <none>        443/TCP             6d4h
+pyflink-kafka-sink-kafka         ClusterIP   None            <none>        6123/TCP,6124/TCP   3d
+pyflink-kafka-sink-kafka-rest    ClusterIP   10.43.128.194   <none>        8081/TCP            3d
+ssb-sse                          ClusterIP   10.43.2.207     <none>        18121/TCP           6d4h
 ```
 
-16. Expose the Flink REST service to the external network by deploying the `ingress-flink-helloworld.yaml` file.
+16. Expose the Flink REST service to the external network by deploying the `ingress-flink-kafkasink.yaml` file.
 ```
-# kubectl -n csa-operator apply -f ingress-flink-helloworld.yaml
-ingress.networking.k8s.io/ingress-flink created
+# kubectl -n csa-operator apply -f ingress-flink-kafkasink.yaml 
+ingress.networking.k8s.io/ingress-flink-kafka-sink created
 
 # kubectl -n csa-ssb get ingress
-NAME                       CLASS    HOSTS                                        ADDRESS   PORTS   AGE
-ingress-flink-helloworld   <none>   pyflink-helloworld.apps.dlee1.cldr.example             80      4s
+NAME                       CLASS    HOSTS                                        ADDRESS         PORTS   AGE
+ingress-flink-kafka-sink   <none>   pyflink-kafka-sink.apps.dlee1.cldr.example   10.129.83.133   80      4d
 ```
 
-17. You may now browse the Flink dashboard via 
-<img width="1426" alt="image" src="https://github.com/user-attachments/assets/6fb915b6-ec8b-4164-bb2a-5b282e913893" />
+17. You may now browse the Flink dashboard via `http://pyflink-kafka-sink.apps.dlee1.cldr.example`
+<img width="1427" alt="image" src="https://github.com/user-attachments/assets/773e5326-0987-4f12-b719-19fcef86b0f1" />
 
-
-19. Expose the SSB UI service to the external network by deploying the `ingress-flink-helloworld.yaml` file.
+19. Expose the SSB UI service to the external network by deploying the `ingress-ssb.yaml` file.
 ```
-# kubectl -n csa-ssb apply -f ingress-flink-helloworld.yaml 
-ingress.networking.k8s.io/ingress-flink-helloworld created
+# kubectl -n csa-ssb apply -f ingress-ssb.yaml
+ingress.networking.k8s.io/ingress-ssb created
 
 # kubectl -n csa-ssb get ingress
-NAME                       CLASS    HOSTS                                        ADDRESS   PORTS   AGE
-ingress-flink-helloworld   <none>   pyflink-helloworld.apps.dlee1.cldr.example             80      4s
+NAME                       CLASS    HOSTS                                        ADDRESS         PORTS   AGE
+ingress-flink-kafka-sink   <none>   pyflink-kafka-sink.apps.dlee1.cldr.example   10.129.83.133   80      9m55s
+ingress-ssb                <none>   myssb.apps.dlee1.cldr.example                10.129.83.133   80      52s
 ```
 
 19. Browse SSB dashboard at `http://myssb.apps.dlee1.cldr.example` and login as admin user.
-<img width="1419" alt="image" src="https://github.com/user-attachments/assets/7ce5c9dd-564a-4083-9259-b6c6fbd6602b" />
+
 
 
 
