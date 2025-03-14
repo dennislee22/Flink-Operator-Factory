@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-ssb
-  namespace: csa-operator
+  namespace: csa-ssb
 spec:
   rules:
   - host: myssb.apps.dlee1.cldr.example
