@@ -1,6 +1,6 @@
-# Flink + SQL Stream Operator: Real-Time Stream Processing
+# Flink Stream Operator: Real-Time Stream Processing
 
-<img width="811" alt="image" src="https://github.com/user-attachments/assets/f8c0b546-0faf-4bd3-af50-9f4c2571e425" />
+<img width="512" alt="image" src="https://github.com/user-attachments/assets/79348128-f4cb-4a28-b5b1-6980b13aee96" />
 
 Apache Flink, coupled with SQL Stream Builder (SSB), provides a robust platform for building scalable, real-time stream processing applications. Whether you're building real-time analytics, monitoring systems, or complex event-driven applications, Flink's support for SQL-based stream processing ensures that developers can quickly express complex logic while taking advantage of Flink’s powerful features like event-time processing, windowing, and fault tolerance. By abstracting the complexity of stream processing behind familiar SQL syntax, SSB democratizes real-time data analytics, enabling teams to deliver actionable insights faster and more efficiently.
 In this article, I will explain the procedures to deploy for CSA (Cloudera Streaming Analytics) operator on a Kubernetes cluster, harnessing cloud-native benefits such as declarative deployments and scalability.
@@ -237,7 +237,7 @@ pyflink-kafka-sink-kafka-taskmanager-1-1    1/1     Running   0              3d
 ssb-sse-865457bc46-9wt6m                    1/1     Running   1 (5d3h ago)   6d4h
 ```
 
-15. Note that `pyflink-helloworld` and `pyflink-helloworld-rest` services have been created automatically.
+12. Note that `pyflink-helloworld` and `pyflink-helloworld-rest` services have been created automatically.
 ```
 # kubectl -n csa-ssb get svc
 NAME                             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE
@@ -247,7 +247,7 @@ pyflink-kafka-sink-kafka-rest    ClusterIP   10.43.128.194   <none>        8081/
 ssb-sse                          ClusterIP   10.43.2.207     <none>        18121/TCP           6d4h
 ```
 
-16. Expose the Flink REST service to the external network by deploying the `ingress-flink-kafkasink.yaml` file.
+13. Expose the Flink REST service to the external network by deploying the `ingress-flink-kafkasink.yaml` file.
 ```
 # kubectl -n csa-operator apply -f ingress-flink-kafkasink.yaml 
 ingress.networking.k8s.io/ingress-flink-kafka-sink created
@@ -257,36 +257,7 @@ NAME                       CLASS    HOSTS                                       
 ingress-flink-kafka-sink   <none>   pyflink-kafka-sink.apps.dlee1.cldr.example   10.129.83.133   80      4d
 ```
 
-17. You may now browse the Flink dashboard via `http://pyflink-kafka-sink.apps.dlee1.cldr.example`
+14. You may now browse the Flink dashboard via `http://pyflink-kafka-sink.apps.dlee1.cldr.example`
 <img width="1427" alt="image" src="https://github.com/user-attachments/assets/773e5326-0987-4f12-b719-19fcef86b0f1" />
 
-19. Expose the SSB UI service to the external network by deploying the `ingress-ssb.yaml` file.
-```
-# kubectl -n csa-ssb apply -f ingress-ssb.yaml
-ingress.networking.k8s.io/ingress-ssb created
 
-# kubectl -n csa-ssb get ingress
-NAME                       CLASS    HOSTS                                        ADDRESS         PORTS   AGE
-ingress-flink-kafka-sink   <none>   pyflink-kafka-sink.apps.dlee1.cldr.example   10.129.83.133   80      9m55s
-ingress-ssb                <none>   myssb.apps.dlee1.cldr.example                10.129.83.133   80      52s
-```
-
-19. Browse SSB dashboard at `http://myssb.apps.dlee1.cldr.example` and login as admin user.
-
-
-
-
-
-
-
-```
-# kubectl create secret generic ssb-sampling-kafka -n csa-ssb \
---from-literal=SSB_SAMPLING_BOOTSTRAP_SERVERS=my-cluster-kafka-brokers.dlee-kafkanodepool.svc.cluster.local:9092 \
---from-literal=SSB_SAMPLING_SECURITY_PROTOCOL=PLAINTEXT
-```
-
-
-
-```
-
-```
