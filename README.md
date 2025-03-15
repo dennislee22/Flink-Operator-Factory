@@ -199,7 +199,7 @@ Login Succeeded!
 ```
 2. Build the `pyflink-kafka` docker image. Tag the image. Push the image into the above docker registry.
 ```
-# docker build -t pyflink-kafka .
+# podman build -t pyflink-kafka .
 STEP 1/10: FROM flink:1.19
 STEP 2/10: COPY ./target/pyflink-kafka-1.19.2-csaop1.2.0-b27.jar /opt/flink/usrlib/pyflink-kafka.jar
 ....
