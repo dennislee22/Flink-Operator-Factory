@@ -256,7 +256,6 @@ ssb-sse-865457bc46-9wt6m                    1/1     Running   1 (5d3h ago)   6d4
 
 1. Expose the Flink REST service to the external network by deploying the `ingress-flink-kafkasink.yaml` file.
 ```
-```
 # kubectl -n csa-ssb get svc
 NAME                             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE
 flink-operator-webhook-service   ClusterIP   10.43.199.16    <none>        443/TCP             7d
