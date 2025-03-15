@@ -96,7 +96,7 @@ replicaset.apps/flink-kubernetes-operator-79d98b567   1         1         1     
 replicaset.apps/ssb-sse-865457bc46                    1         1         1       6d4h
 ```
 
-**Note:** A total of 35 tables created at the external Postgres database. 
+**Note:** A total of 35 tables created at the external postgresql database. 
 ```
 postgres=# \c ssb
 You are now connected to database "ssb" as user "postgres".
