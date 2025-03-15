@@ -111,8 +111,8 @@ ssb=# SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'publi
 
 1. Now that your Flink cluster is ready to run the application. Next step is build the Flink docker image with the necessary Flink dependencies to run the application. Ensure that `git` and `maven` tools are already deployed in your client system before proceeding with the following steps.
 ```
-# git clone https://github.com/dennislee22/Flink-SSB-Operator
-# cd flink-build
+# git clone https://github.com/dennislee22/Flink-Operator-Factory
+# cd Flink-Operator-Factory/flink-build
 # mvn clean package
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
