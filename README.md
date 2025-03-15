@@ -242,7 +242,7 @@ configmap/pyflink-kafka-sink-script created
 flinkdeployment.flink.apache.org/pyflink-kafka-sink-kafka created
 ```
 
-2. Upon successful deployment, ensure all pods (Flink application and TaskManager) and its associated container(s) are up and `Running`.
+2. Upon successful deployment, ensure all pods (Flink job and Task Manager) and its associated container(s) are up and `Running`.
 ```
 # kubectl -n csa-ssb get pods
 NAME                                        READY   STATUS    RESTARTS       AGE
