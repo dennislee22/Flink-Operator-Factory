@@ -1,4 +1,4 @@
-# Flink Operator: Real-Time Stream Processing on K8s
+# Flink Operator: Real-Time Data Processing on K8s
 
 <img src="/images/flinkfactory.gif" width="700" height="636"/>
 
