@@ -224,13 +224,18 @@ Storing signatures
 
 # Build PyFlink script in the ConfigMap
 
+Note: This PyFlink script reads messages from a Kafka source topic, processes the data by calculating the length of each message, and writes the results to a new Kafka destination topic.
 1. Deploy the PyFlink script in the ConfigMap by applying the `pyflink-cm-kafka-sink-kafka.yaml` file.
 ```
 # kubectl -n csa-ssb apply -f pyflink-cm-kafka-sink-kafka.yaml 
 configmap/pyflink-kafka-sink-script created
 ```
+2. The producer of the Kafka source topic is expected to be running, producing the messages as shown in the following example.
+<img width="501" alt="image" src="https://github.com/user-attachments/assets/d6b8c48c-a1a6-4a51-ad98-ff53e42b983b" />
+
 
 # Create Flink deployment
+
 1. Deploy the Flink application by applying the `pyflink-job-kafka-sink-kafka.yaml` file.
 ```
 # kubectl -n csa-ssb apply -f pyflink-job-kafka-sink-kafka.yaml
@@ -267,7 +272,11 @@ NAME                       CLASS    HOSTS                                       
 ingress-flink-kafka-sink   <none>   pyflink-kafka-sink.apps.dlee1.cldr.example   10.129.83.133   80      4d
 ```
 
-2. You may now browse the Flink dashboard via `http://pyflink-kafka-sink.apps.dlee1.cldr.example`
+2. You may now browse the Flink dashboard via `http://pyflink-kafka-sink.apps.dlee1.cldr.example`. The dashboard depicts that the Flink application is running.
 <img width="1427" alt="image" src="https://github.com/user-attachments/assets/773e5326-0987-4f12-b719-19fcef86b0f1" />
+
+# Verify the result of running the PyFlink script
+1. Run JupyterLab to consume the messages from the Kafka destination topic. This shows that the PyFlink script is running successfully, processing the data by calculating the length of each message in real time!
+<img width="524" alt="image" src="https://github.com/user-attachments/assets/ab41d3d0-f0bb-4110-8381-e7ac9cea25aa" />
 
 
