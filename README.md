@@ -1,6 +1,6 @@
-# Flink K8s Operator: Real-Time Stream Processing
+# Flink K8s Operator: Real-Time Stream Processing on K8s
 
-<img width="512" alt="image" src="https://github.com/user-attachments/assets/79348128-f4cb-4a28-b5b1-6980b13aee96" />
+<img src="[/images/flinkfactory.gif]" width="250" height="250"/>
 
 Apache Flink provides a robust platform for building scalable, real-time stream processing applications. Whether you're building real-time analytics, monitoring systems, or complex event-driven applications, Flink ensures that developers can run real-time data transformation logic while taking advantage of Flink’s powerful features like event-time processing, windowing, and fault tolerance. Running the Flink Operator on Kubernetes is an ideal combination, as Kubernetes provides scalability and automatic self-healing capabilities.
 In this article, I will walk you through setting up a Flink factory, building Flink libraries into an immutable Docker image, and creating a PyFlink application using an editable ConfigMap in Kubernetes. Using configmap to store the PyFlink script allows seamless code modification and prevents the need to rebuild the docker image repeatedly.
@@ -8,8 +8,6 @@ In this article, I will walk you through setting up a Flink factory, building Fl
 - build JAR file containing connectors and dependencies by using Maven,
 - build a docker image with Flink runtime, containing the above JAR file and push it into the docker registry,
 - run PyFlink app/script which is written inside the configmap.
-
-<img width="758" alt="image" src="https://github.com/user-attachments/assets/ac784b0d-629d-4b63-a95a-db139baed307" />
 
 My Flink factor environment:
 **CSA Operator Version:** `1.19.2-csaop1.2.0`, based on [OSS Flink Kubernetes Operator v1.9](https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-release-1.9/) and [Flink v1.19](https://nightlies.apache.org/flink/flink-docs-master/release-notes/flink-1.19/)
