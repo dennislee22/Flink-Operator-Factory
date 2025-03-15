@@ -1,19 +1,14 @@
-# Flink K8s Operator: Real-Time Stream Processing on K8s
+# Flink Operator: Real-Time Stream Processing on K8s
 
-<img src="[/images/flinkfactory.gif]" width="250" height="250"/>
+<img src="/images/flinkfactory.gif" width="700" height="636"/>
 
-Apache Flink provides a robust platform for building scalable, real-time stream processing applications. Whether you're building real-time analytics, monitoring systems, or complex event-driven applications, Flink ensures that developers can run real-time data transformation logic while taking advantage of Flink’s powerful features like event-time processing, windowing, and fault tolerance. Running the Flink Operator on Kubernetes is an ideal combination, as Kubernetes provides scalability and automatic self-healing capabilities.
-In this article, I will walk you through setting up a Flink factory, building Flink libraries into an immutable Docker image, and creating a PyFlink application using an editable ConfigMap in Kubernetes. Using configmap to store the PyFlink script allows seamless code modification and prevents the need to rebuild the docker image repeatedly.
+Apache Flink provides a robust platform for building scalable, real-time stream processing applications. Whether you're building real-time analytics, data pipeline, monitoring systems, or complex event-driven applications, Flink ensures that developers can run real-time data transformation logic while taking advantage of Flink’s powerful features like event-time processing, windowing, and fault tolerance. Running the Flink Operator on K8s is an ideal combination, leveraging Kubernetes's scalability and self-healing capabilities. Flink requires Java because it's built on the JVM which provides the necessary libraries for Flink. Therefore building an immutable Docker image to run Flink application on K8s can be challenging. This challenge can be addressed by setting up a `Flink Factory` to build Flink libraries into an immutable Docker image, while creating a PyFlink application using an editable ConfigMap in Kubernetes. Using a ConfigMap to store the PyFlink script allows for seamless code modification without the need to rebuild the Docker image repeatedly.
 
-- build JAR file containing connectors and dependencies by using Maven,
-- build a docker image with Flink runtime, containing the above JAR file and push it into the docker registry,
-- run PyFlink app/script which is written inside the configmap.
-
-My Flink factor environment:
+# My Flink Factory environment:
 **CSA Operator Version:** `1.19.2-csaop1.2.0`, based on [OSS Flink Kubernetes Operator v1.9](https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-release-1.9/) and [Flink v1.19](https://nightlies.apache.org/flink/flink-docs-master/release-notes/flink-1.19/)
 
 
-# Deploy CSA (Cloudera Streaming Analytics) operator on a Kubernetes cluster
+# Deploy CSA (Cloudera Streaming Analytics) operator
 1. In the CNCF-compatible Kubernetes cluster (version 1.23 or later), create a new namespace.
 ```
 # kubectl create ns csa-ssb
@@ -112,7 +107,9 @@ ssb=# SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'publi
 (1 row)
 ```
 
-7. Now that your Flink cluster is ready to run the application. Next step is build the Flink docker image with the necessary Flink dependencies to run the application. Ensure that `git` and `maven` tools are already deployed in your client system before proceeding with the following steps.
+# Build JAR containing connectors and dependencies
+
+1. Now that your Flink cluster is ready to run the application. Next step is build the Flink docker image with the necessary Flink dependencies to run the application. Ensure that `git` and `maven` tools are already deployed in your client system before proceeding with the following steps.
 ```
 # git clone https://github.com/dennislee22/Flink-SSB-Operator
 # cd flink-build
@@ -179,7 +176,7 @@ Downloaded from cloudera: https://repository.cloudera.com/artifactory/cloudera-r
 [INFO] ------------------------------------------------------------------------
 ```
 
-8. Verify that dependencies such as flink-connector-datagen have already been built into the JAR file.
+2. Verify that dependencies such as flink-connector-datagen have already been built into the JAR file.
 ```
 # jar tf pyflink-kafka/target/pyflink-kafka-1.19.2-csaop1.2.0-b27.jar | grep datagen
 org/apache/flink/connector/datagen/
@@ -192,15 +189,15 @@ org/apache/flink/connector/datagen/source/GeneratorSourceReaderFactory.class
 org/apache/flink/connector/datagen/source/GeneratingIteratorSourceReader.class
 ```
 
-9. Log into the docker registry in the local environment. I built a docker registry and the URL is `nexus.dlee1.cldr.example:9999`.
+# Build Docker image with Flink runtime
+1. Log into the docker registry in the local environment. I built a docker registry and the URL is `nexus.dlee1.cldr.example:9999`.
 ```
 # podman login nexus.dlee1.cldr.example:9999
 Username: admin
 Password: 
 Login Succeeded!
 ```
-
-10. Build the `pyflink-kafka` docker image. Tag the image. Push the image into the above docker registry.
+2. Build the `pyflink-kafka` docker image. Tag the image. Push the image into the above docker registry.
 ```
 # docker build -t pyflink-kafka .
 STEP 1/10: FROM flink:1.19
@@ -225,13 +222,22 @@ Writing manifest to image destination
 Storing signatures
 ```
 
-11. Deploy the Flink application by applying the `pyflink-job-kafka-sink-kafka.yaml` file.
+# Build PyFlink script in the ConfigMap
+
+1. Deploy the PyFlink script in the ConfigMap by applying the `pyflink-cm-kafka-sink-kafka.yaml` file.
+```
+# kubectl -n csa-ssb apply -f pyflink-cm-kafka-sink-kafka.yaml 
+configmap/pyflink-kafka-sink-script created
+```
+
+# Create Flink deployment
+1. Deploy the Flink application by applying the `pyflink-job-kafka-sink-kafka.yaml` file.
 ```
 # kubectl -n csa-ssb apply -f pyflink-job-kafka-sink-kafka.yaml
 flinkdeployment.flink.apache.org/pyflink-kafka-sink-kafka created
 ```
 
-12. Upon successful deployment, ensure all pods (Flink application and TaskManager) and its associated container(s) are up and `Running`.
+2. Upon successful deployment, ensure all pods (Flink application and TaskManager) and its associated container(s) are up and `Running`.
 ```
 # kubectl -n csa-ssb get pods
 NAME                                        READY   STATUS    RESTARTS       AGE
@@ -241,18 +247,18 @@ pyflink-kafka-sink-kafka-taskmanager-1-1    1/1     Running   0              3d
 ssb-sse-865457bc46-9wt6m                    1/1     Running   1 (5d3h ago)   6d4h
 ```
 
-12. Note that `pyflink-helloworld` and `pyflink-helloworld-rest` services have been created automatically.
+# Expose Flink REST 
+
+1. Expose the Flink REST service to the external network by deploying the `ingress-flink-kafkasink.yaml` file.
+```
 ```
 # kubectl -n csa-ssb get svc
 NAME                             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE
-flink-operator-webhook-service   ClusterIP   10.43.199.16    <none>        443/TCP             6d4h
-pyflink-kafka-sink-kafka         ClusterIP   None            <none>        6123/TCP,6124/TCP   3d
-pyflink-kafka-sink-kafka-rest    ClusterIP   10.43.128.194   <none>        8081/TCP            3d
-ssb-sse                          ClusterIP   10.43.2.207     <none>        18121/TCP           6d4h
-```
+flink-operator-webhook-service   ClusterIP   10.43.199.16    <none>        443/TCP             7d
+pyflink-kafka-sink-kafka         ClusterIP   None            <none>        6123/TCP,6124/TCP   3d21h
+pyflink-kafka-sink-kafka-rest    ClusterIP   10.43.128.194   <none>        8081/TCP            3d21h
+ssb-sse                          ClusterIP   10.43.2.207     <none>        18121/TCP           7d
 
-13. Expose the Flink REST service to the external network by deploying the `ingress-flink-kafkasink.yaml` file.
-```
 # kubectl -n csa-operator apply -f ingress-flink-kafkasink.yaml 
 ingress.networking.k8s.io/ingress-flink-kafka-sink created
 
@@ -261,7 +267,7 @@ NAME                       CLASS    HOSTS                                       
 ingress-flink-kafka-sink   <none>   pyflink-kafka-sink.apps.dlee1.cldr.example   10.129.83.133   80      4d
 ```
 
-14. You may now browse the Flink dashboard via `http://pyflink-kafka-sink.apps.dlee1.cldr.example`
+2. You may now browse the Flink dashboard via `http://pyflink-kafka-sink.apps.dlee1.cldr.example`
 <img width="1427" alt="image" src="https://github.com/user-attachments/assets/773e5326-0987-4f12-b719-19fcef86b0f1" />
 
 
