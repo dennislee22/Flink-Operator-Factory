@@ -35,7 +35,7 @@ Login Succeeded
 helm list -A | grep csa-operator
 ```
 
-5. Deploy the `csa-operator` Helm chart. Administrator has the option to set additional settings during deployment. For instance, the following installation is deployed with 'csa-ssb-config.yml' file in which the Flink cluster uses the external postgresql database rather than embedded database. In addition, the user database is derived from an external LDAP server. Other helm options can be obtained [here](https://docs.cloudera.com/csa-operator/1.2/reference/topics/csa-op-reference.html). 
+5. Deploy the `csa-operator` Helm chart. Administrator has the option to set additional settings during deployment. For instance, the following installation is deployed with 'csa-ssb-config.yaml' file in which the Flink cluster uses the external postgresql database rather than embedded database. In addition, the user database is derived from an external LDAP server. Other helm options can be obtained [here](https://docs.cloudera.com/csa-operator/1.2/reference/topics/csa-op-reference.html). 
 ```
 # kubectl create secret generic ssb-ldap -n csa-ssb \
   --from-literal=SSB_LDAP_URL="ldap://10.129.82.87:389" \
@@ -52,7 +52,7 @@ helm list -A | grep csa-operator
 # helm install csa-operator --namespace csa-ssb --set 'flink-kubernetes-operator.imagePullSecrets[0].name=cfm-credential' \
 --set 'ssb.sse.image.imagePullSecrets[0].name=cfm-credential' --set 'ssb.sqlRunner.image.imagePullSecrets[0].name=cfm-credential' \
 --set-file flink-kubernetes-operator.clouderaLicense.fileContent=/license.txt \
-oci://container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator --version 1.2.0-b27 -f ./csa-ssb-config.yml
+oci://container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator --version 1.2.0-b27 -f ./csa-ssb-config.yaml
 
 Pulled: container.repository.cloudera.com/cloudera-helm/csa-operator/csa-operator:1.2.0-b27
 Digest: sha256:06771c433e481b93c8cf2f92fac2a2a8abd6a0076b575ec97ff0b8970aabf332
