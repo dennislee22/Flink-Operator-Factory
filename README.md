@@ -96,7 +96,7 @@ replicaset.apps/flink-kubernetes-operator-79d98b567   1         1         1     
 replicaset.apps/ssb-sse-865457bc46                    1         1         1       6d4h
 ```
 
-**Note:** A total of 35 tables created at the external postgresql database. 
+**Note:** A total of 35 tables have been created by the system automatically at the external postgresql database. 
 ```
 postgres=# \c ssb
 You are now connected to database "ssb" as user "postgres".
@@ -224,7 +224,7 @@ Storing signatures
 
 # Build PyFlink script in the ConfigMap
 
-Note: This PyFlink script reads messages from a Kafka source topic, processes the data by calculating the length of each message, and writes the results to a new Kafka destination topic.
+**Note:** This PyFlink script reads messages from a Kafka source topic, processes the data by calculating the length of each message, and writes the results to a new Kafka destination topic.
 1. Deploy the PyFlink script in the ConfigMap by applying the `pyflink-cm-kafka-sink-kafka.yaml` file.
 ```
 # kubectl -n csa-ssb apply -f pyflink-cm-kafka-sink-kafka.yaml 
